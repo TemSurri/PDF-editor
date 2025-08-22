@@ -1,0 +1,60 @@
+.header {
+  background-color: #ffffff; /* sleek white */
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease; /* smooth transition */
+}
+
+.header:hover {
+  background-color: #f0f4ff; /* light blue tint on hover */
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #007bff;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.title:hover {
+  color: #0056b3;
+}
+
+.nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.nav a:hover {
+  color: #007bff;
+}
+
+.nav a:hover::after {
+  width: 100%;
+}

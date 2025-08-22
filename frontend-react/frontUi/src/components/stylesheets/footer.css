@@ -1,0 +1,27 @@
+.footer {
+  background-color: #ffffff; /* sleek white */
+  padding: 16px 24px;
+  text-align: center;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05); /* shadow on top */
+  transition: background-color 0.3s ease;
+}
+
+.footer:hover {
+  background-color: #f0f4ff; /* light blue tint on hover */
+}
+
+.footer p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.footer p span {
+  color: #007bff; /* modern blue highlight */
+  font-weight: 600;
+}
+
+.footer p:hover {
+  color: #007bff; /* text changes to blue on hover */
+}

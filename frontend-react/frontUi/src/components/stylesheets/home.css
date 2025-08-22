@@ -1,0 +1,37 @@
+.page {
+  flex: 1; /* takes available space between header and footer */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Nice centered box */
+.center-box {
+  background-color: #ffffff;
+  padding: 40px 60px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* subtle hover effect */
+.center-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.center-box h2 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.center-box p {
+  color: #333;
+  font-size: 16px;
+}
+
