@@ -58,3 +58,23 @@
 .nav a:hover::after {
   width: 100%;
 }
+.nav button {
+  background-color: #e74c3c; /* soft red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav button:hover {
+  background-color: #c0392b; /* darker red on hover */
+  transform: translateY(-2px); /* subtle lift effect */
+}
+
+.nav button:active {
+  transform: scale(0.95); /* press animation */
+}

@@ -1,0 +1,64 @@
+.auth-box {
+  background: #ffffff;
+  padding: 50px 40px; /* more breathing room */
+  border-radius: 14px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+  max-width: 400px; /* a little wider for balance */
+  margin: 80px auto; /* more space from top */
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.auth-box:hover {
+  transform: translateY(-3px);
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #007bff;
+  margin-bottom: 30px;
+}
+
+.auth-input {
+  display: block;
+  width: 100%; /* all inputs stretch equally */
+  max-width: 320px; /* keeps them aligned neatly */
+  margin: 12px auto; /* centers them */
+  padding: 14px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  text-align: left; /* keeps text aligned properly */
+}
+
+.auth-input:focus {
+  border-color: #007bff;
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+}
+
+.auth-btn {
+  display: block;
+  width: 100%;         /* matches inputs */
+  max-width: 320px;    /* keeps consistent width */
+  margin: 20px auto 0 auto;
+  background: #007bff;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  text-align: center;  /* ensures text stays centered */
+}
+
+
+.auth-btn:hover {
+  background: #0056b3;
+}
