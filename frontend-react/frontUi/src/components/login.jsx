@@ -1,6 +1,6 @@
 import React, { useState, useContext} from "react";
 import "./stylesheets/auth.css";
-import axios from 'axios'
+
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
@@ -16,7 +16,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(username, password); // ✅ wait for login to finish
+      await login(username, password); 
       navigate('/')
     }
      catch (error) {
@@ -26,7 +26,7 @@ const Login = () => {
         alert("Login failed. Please try again.");
       }
     } finally {
-      setLoading(false); // ✅ stop loading after login finishes (success or fail)
+      setLoading(false); 
     }
   };
 

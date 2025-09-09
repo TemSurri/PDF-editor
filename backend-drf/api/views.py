@@ -16,6 +16,8 @@ class ProtectedView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         
         return Response({
-            "message": f"Hello {request.user.username}, your token is valid ✅"
+            "name" : request.user.username,
+            "id" : request.user.id,
+            "message": f"Hello {request.user.username}, tokens are valid"
         })
-# Create your views here.
+

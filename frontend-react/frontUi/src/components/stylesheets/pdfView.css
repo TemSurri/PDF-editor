@@ -1,0 +1,113 @@
+.pdf-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem;
+}
+
+.drop-zone {
+  width: 400px;
+  height: 200px;
+  border: 2px dashed #4a90e2;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.drop-zone:hover {
+  background: #f0f8ff;
+}
+
+.pdf-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.process-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background-color: #4a90e2;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.process-btn:hover {
+  background-color: #357ab8;
+}
+
+.react-pdf__Page__canvas {
+  margin-bottom: 1rem;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.drop-zone {
+  width: 400px;
+  height: 200px;
+  border: 2px dashed #4a90e2;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.drop-zone:hover {
+  background: #f0f8ff;
+}
+
+.drop-zone.active {
+  background: #e6f2ff;
+  border-color: #357ab8;
+  transform: scale(1.05);
+  box-shadow: 0px 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.error-message {
+  color: red;
+  margin: 1rem;
+  text-align: center;
+}
+
+.clear-btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.clear-btn:hover {
+  background-color: #c0392b;
+}
+
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.drop-zone.drop-error {
+  border-color: red;
+  background: #ffe6e6;
+}
+
+.drop-zone.hover {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
