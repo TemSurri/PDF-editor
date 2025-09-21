@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+
 let logoutHandler = null;
 
 export const setLogoutHandler = (fn) => {
@@ -7,7 +9,7 @@ export const setLogoutHandler = (fn) => {
 };
 
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000/api/users"
+    baseURL: base_URL
 });
 
 api.interceptors.request.use(
@@ -35,7 +37,7 @@ api.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const tokens = JSON.parse(localStorage.getItem('tokens'));
-                const res = await axios.post("http://127.0.0.1:8000/api/users/token/refresh/",
+                const res = await axios.post(`${base_URL}/token/refresh/`,
                      {refresh:tokens?.refresh,})
             
                 localStorage.setItem('tokens', JSON.stringify(res.data))

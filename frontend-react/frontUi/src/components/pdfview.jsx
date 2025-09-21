@@ -1,9 +1,10 @@
-import React, { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import "./stylesheets/pdfView.css";
 import { pdfjs, Document, Page } from "react-pdf";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min?url"; 
 import { AuthContext } from '../context/AuthContext';
 import { Stage, Layer, Line, Text } from 'react-konva';
+import api from "../api"
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -15,22 +16,44 @@ const PdfViewer = () => {
   const [error, setError] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
+  
+  const stageRef = useRef(null);
 
-  const [lines, setLines] = useState([]);
+  const [paginatedEdits, setPaginatedEdits] = useState([]);
+
+  useEffect(() => {
+    if (!numPages) return;
+
+    const edits = [];
+    for (let i = 0; i < numPages; i++) {
+      edits.push({ Texts: [], Lines: [] });
+    }
+
+    setPaginatedEdits(edits);
+    }, [numPages]);
+
+  const addLineToPage = (line) => {
+    setPaginatedEdits(
+      prev => prev.map((page, idx) => idx === (pageNum -1) ? {...page, Lines: [...page.Lines, line]}
+      : page
+    ))
+  }
+
+  const addTextToPage = (text) => {
+    setPaginatedEdits(
+      prev => prev.map((page, idx) => idx === (pageNum -1) ? {...page, Texts: [...page.Texts, text]}
+    : page)
+    )
+  }
+
   const isDrawing = useRef(false);
-
-  const [texts, setTexts] = useState([]);
   const [fontSize, setFontSize] = useState(20)
-
   const [editingTextId, setEditingTextId] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef();
-
   const [strokeWidth, setStrokeWidth] = useState(5); 
   const [strokeColor, setStrokeColor] = useState("#000000"); 
-
   const colors = ["#df4b26", "#000000", "#007bff", "#28a745", "#ffc107"]; 
-
 
   const [tool, setTool] = useState(null);
 
@@ -40,9 +63,13 @@ const PdfViewer = () => {
 
     if (tool === "pen" || tool === "eraser") {
       isDrawing.current = true;
-      setLines([...lines, { tool, points: [pointer.x, pointer.y], strokeWidth, strokeColor}]);
+      let line_info = { tool, points: [pointer.x, pointer.y], strokeWidth, strokeColor}
+      addLineToPage(line_info)
+     
     } else if (tool === "Text") {
-      setTexts([...texts, { x: pointer.x, y: pointer.y, text: "New text", fontSize: fontSize, id: Date.now() }]);
+      let text_info = { x: pointer.x, y: pointer.y, text: "New text", fontSize: fontSize, id: Date.now() }
+      addTextToPage(text_info)
+      
     }
   };
 
@@ -51,10 +78,23 @@ const PdfViewer = () => {
 
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
-    const lastLine = lines[lines.length - 1];
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
-    setLines([...lines.slice(0, -1), lastLine]);
+
+    setPaginatedEdits(prev => {
+      const updated = [...prev];
+      const page = { ...updated[pageNum - 1] };
+
+      if (!page.Lines.length) return prev; 
+
+      const lastLine = { ...page.Lines[page.Lines.length - 1] };
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+      page.Lines = [...page.Lines.slice(0, -1), lastLine];
+
+      updated[pageNum - 1] = page;
+      return updated;
+    });
   };
+
 
   const handleMouseUp = () => { 
     console.log(tool)
@@ -80,28 +120,113 @@ const PdfViewer = () => {
   const handleDragEnter = (e) => { e.preventDefault(); setIsDragging(true); };
   const handleDragLeave = (e) => { e.preventDefault(); setIsDragging(false); };
 
-  const onDocumentLoadSuccess = ({ numPages }) => { setNumPages(numPages); setError(null); };
+  const onDocumentLoadSuccess = (
+    { numPages }) => { setNumPages(numPages); 
+      setError(null); 
+    };
   const onPageLoadSuccess = ({ width, height }) => { setPdfSize({ width, height }); };
   const onDocumentLoadError = (err) => { console.error(err); setError("Failed to load PDF."); };
 
-  const handleProcess = () => {
-    if (!file) return;
-    if (!isLoggedIn) { alert("Must Login"); return; }
-    alert(`Processing PDF: ${file.name}`);
-  };
+  const handleProcess = async () => {
+  if (!file) {
+    alert("No file selected");
+    return;
+  }
+  if (!isLoggedIn) {
+    alert("Must Login");
+    return;
+  }
+
+  try {
+    const prePage = pageNum; 
+    const formData = new FormData();
+    formData.append("pdf", file);
+
+    const data = [];
+
+    const getPixelRatio = () => {
+      if (numPages >1000) {
+        return 1
+      }
+      else if (numPages > 300){
+        return 2
+      }
+      else {
+        return 3
+      }
+    }
+    const capturePage = (pageIndex) => new Promise((resolve) => {
+      setPageNum(pageIndex + 1);
+
+      const checkRender = () => {
+       
+        if (stageRef.current) {
+
+          const pixel_ratio = getPixelRatio()
+
+          resolve(stageRef.current.toDataURL({pixelRatio : pixel_ratio}));
+
+        } else {
+          requestAnimationFrame(checkRender);
+        }
+      };
+
+      requestAnimationFrame(checkRender);
+    });
+
+
+    for (let i = 0; i < numPages; i++) {
+      const edits = paginatedEdits[i];
+
+      if (!edits || (edits.Lines.length === 0 && edits.Texts.length === 0)) {
+        data.push({ index: i, png: null });
+        continue;
+      }
+
+    
+      const uri = await capturePage(i);
+      data.push({ index: i, png: uri });
+    }
+
+    formData.append("edits", JSON.stringify(data));
+
+    try {
+      const response = await api.post("/protected/", formData, {
+        responseType: "blob",
+      });
+
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+   
+      window.open(pdfUrl);
+      console.log("Success:", response.data);
+    } catch (error) {
+      console.error("API Error:", error);
+      alert("Error processing PDF on server. Check console.");
+    }
+
+    setPageNum(prePage);
+    
+  } catch (err) {
+    console.error("Error in handleProcess:", err);
+    alert("An error occurred during PDF processing. Check console.");
+  }
+};
 
   const handleClear = () => {
     setFile(null);
     setPageNum(1);
+    setPaginatedEdits(null);
     setNumPages(null);
-    setLines([]);
-    setTexts([]);
+    
     setEditingTextId(null);
     setInputValue("");
     setError(null);
   };
 
   const editingInput = editingTextId ? (() => {
+    let texts = paginatedEdits[pageNum - 1].Texts
     const t = texts.find(txt => txt.id === editingTextId);
     if (!t) return null;
     return (
@@ -119,7 +244,16 @@ const PdfViewer = () => {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onBlur={() => {
-          setTexts(texts.map(txt => txt.id === editingTextId ? { ...txt, text: inputValue } : txt));
+          setPaginatedEdits(prev => {
+            const updated = [...prev];
+            const page = { ...updated[pageNum - 1] }; 
+            page.Texts = page.Texts.map(txt =>
+              txt.id === editingTextId ? { ...txt, text: inputValue } : txt
+            );
+            updated[pageNum - 1] = page;
+            return updated;
+          });
+
           setEditingTextId(null);
         }}
         onKeyDown={(e) => { if (e.key === "Enter") inputRef.current.blur(); }}
@@ -153,7 +287,7 @@ const PdfViewer = () => {
                 <div className="pagination-controls">
                   <button disabled={tool === "pen"} onClick={() => setTool("pen")}>Draw</button>
                   <button disabled={tool === "eraser"} onClick={() => setTool("eraser")}>Eraser</button>
-                  <button disabled={tool === "Text"} onClick={() => setTool("Text")}>Add Text Box</button>
+                  <button disabled={tool === "Text"} onClick={() => setTool("Text")}>TextBox</button>
                   <button disabled={tool === null} onClick={() => setTool(null)}>De-Select</button>
                 </div>
                 { (tool === "Text") && (
@@ -212,15 +346,15 @@ const PdfViewer = () => {
                 )}
               </div>
 
-
               <Document file={file} onLoadSuccess={onDocumentLoadSuccess} onLoadError={onDocumentLoadError}>
                 <div style={{ position: "relative", display: "inline-block" }}>
                   <Page pageNumber={pageNum} key={`page_${pageNum}`} renderAnnotationLayer={false} renderTextLayer={false} onRenderSuccess={onPageLoadSuccess} />
-                  {pdfSize && (
+                  {pdfSize && paginatedEdits && paginatedEdits[pageNum - 1] && (
                     <>
                      <Stage
                         width={pdfSize.width}
                         height={pdfSize.height}
+                        ref = {stageRef}
                         style={{ position: "absolute", top: 0, left: 0 }}
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
@@ -230,7 +364,7 @@ const PdfViewer = () => {
                         onTouchEnd={handleMouseUp}
                       >
                         <Layer>
-                          {lines.map((line, i) => (
+                          {paginatedEdits[pageNum - 1].Lines.map((line, i) => (
                             <Line
                               key={i}
                               points={line.points}
@@ -241,10 +375,11 @@ const PdfViewer = () => {
                               lineJoin="round"
                               globalCompositeOperation={line.tool === 'eraser' ? 'destination-out' : 'source-over'}
                             />
-                          ))}
+                          ))
+                          }
 
-                          {texts.map((t) => {
-                            if (t.id === editingTextId) return null; // gotta hide thetexts being edited since its diff layer
+                          {paginatedEdits[pageNum - 1].Texts.map((t) => {
+                            if (t.id === editingTextId) return null; // cuzzo gotta hide thetexts being edited since its diff layer
                             return (
                               <Text
                                 key={t.id}
@@ -254,7 +389,16 @@ const PdfViewer = () => {
                                 fontSize={t.fontSize}
                                 draggable
                                 onDragEnd={(e) => {
-                                  setTexts(texts.map(txt => txt.id === t.id ? { ...txt, x: e.target.x(), y: e.target.y() } : txt));
+                                  setPaginatedEdits(prev => {
+                                    const updated = [...prev];
+                                    const page = { ...updated[pageNum - 1] }; 
+                                    page.Texts = page.Texts.map(txt =>
+                                      txt.id === t.id ? { ...txt, x: e.target.x(), y: e.target.y() } : txt
+                                    );
+                                    updated[pageNum - 1] = page;
+                                    return updated; 
+                                  });
+
                                 }}
                                 onClick={() => {
                                   setEditingTextId(t.id);
@@ -273,7 +417,7 @@ const PdfViewer = () => {
               </Document>
               <div className="controls">
                 <div className="pagination-controls">
-                  <button disabled={pageNum === 1} onClick={() => setPageNum(pageNum - 1)}>Previous</button>
+                  <button disabled={pageNum === 1} onClick={() => {setPageNum(pageNum - 1)}}>Previous</button>
                   <span>Page {pageNum} of {numPages}</span>
                   <button disabled={pageNum === numPages} onClick={() => setPageNum(pageNum + 1)}>Next</button>
                 </div>

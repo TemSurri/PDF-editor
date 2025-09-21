@@ -14,7 +14,8 @@ const Home = () => {
         (<h2>Welcome {username}</h2>):
         (<h2>Welcome to PDF Editor</h2>)}
         
-        <p>Edit, manage, and save your PDFs with ease.</p>
+        <p>Fast & Free simple PDF Editor</p>
+       
       </div>
     </div>
     <div className="page">
