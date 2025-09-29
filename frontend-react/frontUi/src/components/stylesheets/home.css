@@ -1,12 +1,12 @@
 .page {
-  flex: 1; /* takes available space between header and footer */
+  flex: 1; 
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
 
-/* Nice centered box */
+
 .center-box {
   background-color: #ffffff;
   padding: 40px 60px;
@@ -19,7 +19,6 @@
 }
 
 
-/* subtle hover effect */
 .center-box:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);

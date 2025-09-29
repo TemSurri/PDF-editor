@@ -16,23 +16,26 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      // 1. Send login request
+      // send login request
       const res = await api.post("/token/", {
         username,
         password,
       });
 
-      // 2. Save da tokens
+      // save da tokens
       setAuthTokens(res.data);
       localStorage.setItem("tokens", JSON.stringify(res.data));
-
-      // 3. Fetch user info from backend
+      
+      // fetch the user info from backend
       const user_response = await api.get( "/protected/")
+
       console.log(user_response.data);
       setUsername(user_response.data.name);
       setIsLoggedIn(true);
 
     } catch (error) {
+        setAuthTokens(null);
+        setIsLoggedIn(false);
         throw(error);
     }
   };
@@ -56,7 +59,8 @@ export const AuthProvider = ({ children }) => {
           const user_response = await api.get("/protected/");
           setUsername(user_response.data.name)
         } catch (error) {
-          console.errer("failed to catch user info")
+          console.error("failed to catch user info")
+          logout()
         }
         }
         fetchUser();

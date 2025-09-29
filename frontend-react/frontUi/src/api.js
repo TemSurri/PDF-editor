@@ -33,7 +33,9 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        const raw = localStorage.getItem("tokens");
+        const tokens = raw ? JSON.parse(raw) : null;
+        if (error.response?.status === 401 && !originalRequest._retry && tokens?.refresh) {
             originalRequest._retry = true;
             try {
                 const tokens = JSON.parse(localStorage.getItem('tokens'));
@@ -43,10 +45,11 @@ api.interceptors.response.use(
                 localStorage.setItem('tokens', JSON.stringify(res.data))
                 originalRequest.headers.Authorization = `Bearer ${res.data.access}`
                 return api(originalRequest)
-            } catch (refreshError) {
-                if (logoutHandler) logoutHandler();    
+            } catch (refreshError) {              
+                if (logoutHandler) {logoutHandler()}; 
             }
         }
+        
         return Promise.reject(error);
     }
 )

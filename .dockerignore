@@ -1,0 +1,11 @@
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+dist
+node_modules
+npm-debug.log
+.DS_Store
+.env
+.git

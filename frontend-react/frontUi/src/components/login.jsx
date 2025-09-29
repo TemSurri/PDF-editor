@@ -9,6 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null)
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,9 +22,9 @@ const Login = () => {
     }
      catch (error) {
       if (error.response?.data?.detail) {
-        alert(error.response.data.detail);
+        setError(error.response.data.detail);
       } else {
-        alert("Login failed. Please try again.");
+        setError("Login failed. Please try again.");
       }
     } finally {
       setLoading(false); 
@@ -50,6 +51,8 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        {error && (<div>{error}</div>)}
+        
         {loading ? <button type="submit" className="auth-btn" disabled>
           Loading
         </button> : <button type="submit" className="auth-btn">

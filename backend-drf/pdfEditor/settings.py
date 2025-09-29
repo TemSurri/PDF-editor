@@ -39,9 +39,10 @@ REST_FRAMEWORK = {
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend"]
+
 
 # Application definition
 
@@ -144,7 +145,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "api.CustomUser"
 
 CORS_ALLOWED_ORIGINS = [
-    config('FRONT_END_URL'),
-    config('BASE_URL'),
+    config('FRONT_END_URL_DOCKER'),
+    config('FRONT_END_URL_NG'),
+    config('DEV_FRONT_END'),
+    config('FRONT_END_URL_NG_ALT'),
+    config('DEV_FRONT_END_ALT'),
 ]
-
+CORS_ALLOW_CREDENTIALS = True

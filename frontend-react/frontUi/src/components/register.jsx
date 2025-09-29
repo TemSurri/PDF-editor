@@ -3,12 +3,19 @@ import "./stylesheets/auth.css";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 
+
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const [pass_error, setPassError] = useState(false);
+  const [mail_error, setEmailError] = useState(false);
+  const [name_error, setNameError] = useState(false);
+
+  const [error, setError] = useState(false)
   
   const onRegister = async (data) => {
     try {
@@ -16,21 +23,28 @@ const Register = () => {
       const response = await axios.post('http://127.0.0.1:8000/api/users/register/', data);
       console.log('Registration successful:', response.data);
       navigate('/login');
+
     } catch (error) {
       if (error.response && error.response.data) {
-        const errorMessages = Object.entries(error.response.data)
-          .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
-          .join("\n");
+        const errorMessages = error.response.data
 
-        alert(`Registration failed:\n${errorMessages}`);
+        if (errorMessages.email) {
+          setEmailError(errorMessages.email)
+        }
+        if (errorMessages.password) {
+          setPassError(errorMessages.password)
+        }
+        if (errorMessages.username) {
+          setNameError(errorMessages.username)
+        }
+        console.log(errorMessages);
       } else {
-        alert("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
-    } finally {
-      setUsername('');
-      setEmail('');
-      setPassword('');
+      
+    } finally {   
       setLoading(false);
+      
     }
   }
 
@@ -42,30 +56,34 @@ const Register = () => {
 
   return (
     <div className="auth-box">
+      {error && (error)}
       <h2 className="auth-title">Sign Up</h2>
       <form onSubmit={handleSubmit}>
+        {name_error && (name_error)}
         <input
           type="text"
           placeholder="Username"
           className="auth-input"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {setUsername(e.target.value); setNameError(false)}}
           required
         />
+        {mail_error && (mail_error)}
         <input
           type="email"
           placeholder="Email"
           className="auth-input"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {setEmail(e.target.value); setEmailError(false) }}
           required
         />
+        {pass_error && (pass_error)}
         <input
           type="password"
           placeholder="Password"
           className="auth-input"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {setPassword(e.target.value); setPassError(false)}}
           required
         />
         {loading ? <button type="submit" className="auth-btn" disabled>
