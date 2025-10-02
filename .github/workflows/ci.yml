@@ -20,15 +20,15 @@ jobs:
       - name: Build backend image
         uses: docker/build-push-action@v4
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./backend-drf
+          file: ./backend-drf/Dockerfile
           push: false
           tags: backend:latest
 
       - name: Build frontend image
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./frontend-react/frontui
+          file: ./frontend-react/Dockerfile
           push: false
           tags: frontend:latest

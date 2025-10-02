@@ -31,6 +31,7 @@ class ProtectedView(generics.GenericAPIView):
             response = HttpResponse(merged_pdf, content_type="application/pdf")
             response["Content-Disposition"] = f"attachment; filename=edited_{safe_name}"
             return response
+        
         else:
             try:
                 pdf_file = request.FILES["pdf"]
@@ -46,8 +47,6 @@ class ProtectedView(generics.GenericAPIView):
 
             except Exception as e:
                 return HttpResponse(f"Error: {str(e)}", status=500)
-
-
 
     def get(self, request, *args, **kwargs):
         
