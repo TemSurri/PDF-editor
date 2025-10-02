@@ -23,12 +23,13 @@ jobs:
           context: ./backend-drf
           file: ./backend-drf/Dockerfile
           push: false
-          tags: backend:latest
-
+          tags: backend:test
+      - name: Run backend tests
+        run: docker run --rm backend:test python manage.py test
       - name: Build frontend image
         uses: docker/build-push-action@v4
         with:
           context: ./frontend-react/frontUi
-          file: ./frontend-react/Dockerfile
+          file: ./frontend-react/frontUi/Dockerfile
           push: false
-          tags: frontend:latest
+          tags: frontend:test
