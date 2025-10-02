@@ -7,7 +7,6 @@ from django.http import HttpResponse
 import json
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .pdf_utils import *
-print("http only cookies")
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()

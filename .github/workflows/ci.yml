@@ -3,7 +3,7 @@ name: CI — build Docker images
 on:
   push:
     branches:
-      - main
+      - "**"
   pull_request:
     branches:
       - main
