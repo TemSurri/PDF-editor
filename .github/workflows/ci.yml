@@ -28,7 +28,7 @@ jobs:
       - name: Build frontend image
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend-react/frontui
+          context: ./frontend-react/frontUi
           file: ./frontend-react/Dockerfile
           push: false
           tags: frontend:latest
