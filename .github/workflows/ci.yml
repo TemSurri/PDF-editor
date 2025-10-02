@@ -23,6 +23,7 @@ jobs:
           context: ./backend-drf
           file: ./backend-drf/Dockerfile
           push: false
+          load: true
           tags: backend:test
       - name: Run backend tests
         run: docker run --rm backend:test python manage.py test
