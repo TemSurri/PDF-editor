@@ -13,8 +13,8 @@
   like job applications, government paperwork, school/scholarship forms, leases, etc.
 
   That’s exactly why I made this project:
-    So people who don't have establsihed methods of pdf editing
-    can have access to a free, no-subscription, in-between PDF editor made just for form filling.
+  So people who don't have establsihed methods of pdf editing
+  can have access to a free, no-subscription, in-between PDF editor made just for form filling.
 
 # Features:
 
@@ -23,10 +23,6 @@
     (You need to set up a quick login to secure your filled forms, as they may contain sensitive info)
   - Works in the browser 
   - 100% free, no subscription required
-
-
-
-
 
 
 # Tech Stack:
