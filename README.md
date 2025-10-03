@@ -1,8 +1,8 @@
-# 📄 Free & Simple PDF Form Filler
+# Free & Simple PDF Form Filler
 
 <img width="927" height="787" alt="Screenshot 2025-10-02 at 9 22 42 PM" src="https://github.com/user-attachments/assets/7d9a6217-b6da-4a8b-8e34-07d2624b3e7e" />
 
-# 🚀 Use Case
+# Use Case
 
   Most PDF editors are either:
 
@@ -16,7 +16,7 @@
     So people who don't have establsihed methods of pdf editing
     can have access to a free, no-subscription, in-between PDF editor made just for form filling.
 
-# ✨ Features:
+# Features:
 
   - 📝 Fill out PDF forms easily
   - 🔒 Secure — your files never leave your session
@@ -29,7 +29,7 @@
 
 
 
-## 🛠 Tech Stack
+# Tech Stack:
 - Backend: Python, Django REST Framework
 - Frontend: React, JavaScript
 - Database: SQLite (just to store users, no complex data as pdf edits are only session based)
