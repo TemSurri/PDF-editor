@@ -1,6 +1,13 @@
 from rest_framework.response import Response
-from rest_framework import generics
-from .serializers import RegisterSerializer
+from rest_framework import generics, views
+from .serializers import *
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.exceptions import InvalidToken
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 
 from .models import CustomUser
 from django.http import HttpResponse
@@ -54,6 +61,55 @@ class ProtectedView(generics.GenericAPIView):
             "id" : request.user.id,
             "message": f"Hello {request.user.username}, tokens are valid"
         })
+
+class LogoutView(views.APIView):
+    def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+        if refresh_token:
+            try:
+                refresh = RefreshToken(refresh_token)
+                refresh.blacklist()
+            except Exception as e:
+                return Response({"error":str(e)}, status = status.HTTP_400_BAD_REQUEST)
+        response = Response({"message":"Logged Out"})
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+        return response
+class LoginView(views.APIView):
+
+    def post(self, request):
+        serializer = LoginUserSerializer(data = request.data)
+
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+
+            response = Response(status = status.HTTP_200_OK)
+            response.set_cookie(key="access_token", value=access_token, httponly = True, secure=True,samesite="None")
+            response.set_cookie(key="refresh_token", value=str(refresh), httponly = True, secure=True,samesite="None")
+            return response
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class CookieTokenRefreshView(TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get("refresh_token")
+        if not refresh_token:
+            return Response({"error": "No refresh token"}, status=400)
+        try:
+            data = {"refresh": refresh_token}
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            access = serializer.validated_data["access"]
 
+            response = Response(status=status.HTTP_200_OK)
+            response.set_cookie("access_token", access, httponly=True, secure=True, samesite="None")
+            if "refresh" in serializer.validated_data:
+                response.set_cookie("refresh_token", serializer.validated_data["refresh"], httponly=True, secure=True, samesite="None")
+            return response
+        except InvalidToken:
+            return Response({"error": "Invalid refresh"}, status=401)
 
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"detail": "CSRF cookie set"})

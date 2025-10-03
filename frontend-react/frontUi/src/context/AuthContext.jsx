@@ -1,76 +1,60 @@
 import React, { useEffect, createContext, useState } from "react";
-import api, {setLogoutHandler} from "../api"
+import api from "../api";
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [username, setUsername] = useState(null);
-
-  const [authTokens, setAuthTokens] = useState(() => {
-    const tokens = localStorage.getItem("tokens");
-    return tokens ? JSON.parse(tokens) : null;
-  });
-  const [isLoggedIn, setIsLoggedIn] = useState(()=> {
-    return Boolean(localStorage.getItem("tokens"));
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const login = async (username, password) => {
     try {
-      // send login request
-      const res = await api.post("/token/", {
-        username,
-        password,
-      });
+  
+      await api.get("/csrf/");
+      await api.post("/login/", { username, password }); 
 
-      // save da tokens
-      setAuthTokens(res.data);
-      localStorage.setItem("tokens", JSON.stringify(res.data));
-      
-      // fetch the user info from backend
-      const user_response = await api.get( "/protected/")
-
-      console.log(user_response.data);
+      const user_response = await api.get("/protected/");
       setUsername(user_response.data.name);
       setIsLoggedIn(true);
-
     } catch (error) {
-        setAuthTokens(null);
-        setIsLoggedIn(false);
-        throw(error);
+      setUsername(null);
+      setIsLoggedIn(false);
+      throw error;
     }
   };
 
-  const logout = () => {
-    setAuthTokens(null);
-  
-    window.location.href = '/login';
-    localStorage.removeItem("tokens");
-
-    setIsLoggedIn(false);
+  const logout = async () => {
+    try {
+      await api.post("/logout/");
+    } catch (e) {
+      console.error("Logout error", e);
+    }
     setUsername(null);
-
+    setIsLoggedIn(false);
+   
+    window.location.href = "/login";
   };
+
 
   useEffect(() => {
-    setLogoutHandler(logout);
-    if (isLoggedIn && !username) {
-      const fetchUser = async () => {
-        try {
-          const user_response = await api.get("/protected/");
-          setUsername(user_response.data.name)
-        } catch (error) {
-          console.error("failed to catch user info")
-          logout()
-        }
-        }
-        fetchUser();
-    }
-
-    }, []);
+    const initAuth = async () => {
+      try {
+        await api.get("/csrf/"); 
+        const res = await api.get("/protected/");
+        setUsername(res.data.name);
+        setIsLoggedIn(true);
+      } catch {
+        setUsername(null);
+        setIsLoggedIn(false);
+      }
+    };
+    initAuth();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, authTokens, username, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, username, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
+

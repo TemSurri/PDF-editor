@@ -1,57 +1,62 @@
-import axios from 'axios';
+import axios from "axios";
 
 const base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
-let logoutHandler = null;
-
-export const setLogoutHandler = (fn) => {
-  logoutHandler = fn;
-};
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
 
 const api = axios.create({
-    baseURL: base_URL
+  baseURL: base_URL,
+  withCredentials: true, 
 });
 
 api.interceptors.request.use(
-    (config) => {
-        let tokens;
-        try {
-            const raw = localStorage.getItem('tokens');
-            tokens = raw ? JSON.parse(raw) : null;
-        } catch {
-            tokens = null;
-                }
-        if (tokens?.access) {
-            config.headers.Authorization = `Bearer ${tokens.access}`;
-        }
-        return config;
-    },
-        (error) => Promise.reject(error)
-)
+  (config) => {
+    const csrfToken = getCookie("csrftoken");
+    if (csrfToken) {
+      config.headers["X-CSRFToken"] = csrfToken;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+const isAuthRoute = (url = "") =>
+  url.includes("/login/") ||
+  url.includes("/logout/") ||
+  url.includes("/csrf/") ||
+  url.includes("/token/refresh/");
+
 
 api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-        const raw = localStorage.getItem("tokens");
-        const tokens = raw ? JSON.parse(raw) : null;
-        if (error.response?.status === 401 && !originalRequest._retry && tokens?.refresh) {
-            originalRequest._retry = true;
-            try {
-                const tokens = JSON.parse(localStorage.getItem('tokens'));
-                const res = await axios.post(`${base_URL}/token/refresh/`,
-                     {refresh:tokens?.refresh,})
-            
-                localStorage.setItem('tokens', JSON.stringify(res.data))
-                originalRequest.headers.Authorization = `Bearer ${res.data.access}`
-                return api(originalRequest)
-            } catch (refreshError) {              
-                if (logoutHandler) {logoutHandler()}; 
-            }
-        }
-        
-        return Promise.reject(error);
-    }
-)
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    const status = error?.response?.status;
 
-export default api
+    if (status !== 401 || originalRequest?._retry || isAuthRoute(originalRequest?.url)) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+    try {
+
+      await axios.post(
+        `${base_URL}/token/refresh/`,
+        {},
+        {
+          withCredentials: true,
+          headers: { "X-CSRFToken": getCookie("csrftoken") || "" },
+        }
+      );
+      return api(originalRequest); 
+    } catch (refreshError) {
+      return Promise.reject(refreshError);
+    }
+  }
+);
+
+export default api;

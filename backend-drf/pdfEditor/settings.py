@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.authentication.CookieJWTAuthentication',
     ),
 }
 
@@ -39,7 +39,7 @@ REST_FRAMEWORK = {
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend"]
 
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist"
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    config('FRONT_END_URL_DOCKER'),
+    config('FRONT_END_URL_NG'),
+    config('DEV_FRONT_END'),
+    config('FRONT_END_URL_NG_ALT'),
+    config('DEV_FRONT_END_ALT'),
+]
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"   
+CSRF_COOKIE_HTTPONLY = False
