@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from decouple import config
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
@@ -27,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'api.authentication.CookieJWTAuthentication',
     ),
 }
 
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist"
 ]
 
 MIDDLEWARE = [
@@ -94,10 +96,11 @@ WSGI_APPLICATION = 'pdfEditor.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(
+            config('DB_URL'), 
+            conn_max_age = 600,
+            ssl_require = True
+            )
 }
 
 
@@ -153,3 +156,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    config('FRONT_END_URL_DOCKER'),
+    config('FRONT_END_URL_NG'),
+    config('DEV_FRONT_END'),
+    config('FRONT_END_URL_NG_ALT'),
+    config('DEV_FRONT_END_ALT'),
+]
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = "None"   
+CSRF_COOKIE_HTTPONLY = False

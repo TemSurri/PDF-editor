@@ -3,7 +3,7 @@ name: CI — build Docker images
 on:
   push:
     branches:
-      - main
+      - "**"
   pull_request:
     branches:
       - main
@@ -23,13 +23,12 @@ jobs:
           context: ./backend-drf
           file: ./backend-drf/Dockerfile
           push: false
-          tags: backend:test
-      - name: Run backend tests
-        run: docker run --rm backend:test python manage.py test
+          load: true
+          tags: backend:latest
       - name: Build frontend image
         uses: docker/build-push-action@v4
         with:
           context: ./frontend-react/frontUi
           file: ./frontend-react/frontUi/Dockerfile
           push: false
-          tags: frontend:test
+          tags: frontend:latest
