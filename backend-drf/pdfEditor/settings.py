@@ -103,6 +103,7 @@ DATABASES = {
             ssl_require = True
             )
 }
+DATABASES['default']['CONN_HEALTH_CHECKS'] = True
 
 
 # Password validation
