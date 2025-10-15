@@ -124,6 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+MIDDLEWARE += [
+    'django.middleware.db.middleware.DatabaseConnectionResetMiddleware',
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
