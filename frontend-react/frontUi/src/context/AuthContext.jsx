@@ -42,6 +42,8 @@ export function AuthProvider({ children }) {
       try {
         await api.get("/csrf/"); 
         const res = await api.get("/protected/", {withCredentials: true});
+        console.log("Axios default baseURL:", api.defaults.baseURL);
+
 
         setUsername(res.data.name);
         setIsLoggedIn(true);
