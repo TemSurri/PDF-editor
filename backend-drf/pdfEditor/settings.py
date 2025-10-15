@@ -99,7 +99,7 @@ DATABASES = {
     'default': dj_database_url.parse(
         # im changing my pass word right after this lol
             'postgresql://postgres.bhnghxdxtgatznkuamwt:Howtodie101!@aws-1-us-east-2.pooler.supabase.com:5432/postgres', 
-            conn_max_age = 0,
+            conn_max_age = 600,
             ssl_require = True
             )
 }
