@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
+let base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 if (base_URL === undefined) {
   base_URL = 'https://pdf-editor-2hwn.onrender.com/api/users';
 }
