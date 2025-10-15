@@ -2,7 +2,7 @@ import axios from "axios";
 
 let base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 if (base_URL === undefined) {
-  base_URL = 'https://pdf-editor-2hwn.onrender.com/api/users';
+  base_URL = 'https://freepdfeditor.onrender.com/api/users';
 }
 
 
