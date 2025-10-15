@@ -20,7 +20,7 @@ const Register = () => {
   const onRegister = async (data) => {
     try {
       setLoading(true);
-      const response = await axios.post('http://127.0.0.1:8000/api/users/register/', data);
+      const response = await axios.post('/register/', data);
       console.log('Registration successful:', response.data);
       navigate('/login');
 
