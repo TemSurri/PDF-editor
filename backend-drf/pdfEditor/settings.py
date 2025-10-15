@@ -42,7 +42,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend", "pdf-editor-2hwn.onrender.com"]
 
 
 # Application definition
@@ -166,3 +166,7 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"   
 CSRF_COOKIE_HTTPONLY = False
+
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_HTTPONLY = True
