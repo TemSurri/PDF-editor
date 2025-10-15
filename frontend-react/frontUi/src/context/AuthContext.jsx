@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
       await api.post("/login/", { username, password }); 
 
       const user_response = await api.get("/protected/");
+
       setUsername(user_response.data.name);
       setIsLoggedIn(true);
     } catch (error) {
@@ -40,7 +41,10 @@ export function AuthProvider({ children }) {
     const initAuth = async () => {
       try {
         await api.get("/csrf/"); 
-        const res = await api.get("/protected/");
+        const res = await api.get("/protected/", {withCredentials: true});
+
+        console.log(res.status)
+
         setUsername(res.data.name);
         setIsLoggedIn(true);
       } catch {
