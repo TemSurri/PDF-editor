@@ -43,9 +43,6 @@ export function AuthProvider({ children }) {
         await api.get("/csrf/"); 
         const res = await api.get("/protected/", {withCredentials: true});
 
-        console.log(res.data)
-        console.log(res.user_response)
-
         setUsername(res.data.name);
         setIsLoggedIn(true);
       } catch {

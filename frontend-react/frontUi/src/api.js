@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-
+console.log(base_URL)
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
