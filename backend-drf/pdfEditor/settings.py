@@ -42,7 +42,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend", "pdf-editor-2hwn.onrender.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "frontend", "pdf-editor-2hwn.onrender.com", config('CURRENT_HOST')]
 
 
 # Application definition
@@ -154,6 +154,7 @@ CORS_ALLOWED_ORIGINS = [
     config('DEV_FRONT_END'),
     config('FRONT_END_URL_NG_ALT'),
     config('DEV_FRONT_END_ALT'),
+    config('FRONT_END_BASE'),
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -163,6 +164,7 @@ CSRF_TRUSTED_ORIGINS = [
     config('DEV_FRONT_END'),
     config('FRONT_END_URL_NG_ALT'),
     config('DEV_FRONT_END_ALT'),
+    config('FRONT_END_BASE')
 ]
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"   
@@ -171,6 +173,3 @@ CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 SESSION_COOKIE_HTTPONLY = True
-
-CORS_ALLOWED_ORIGINS += ["https://pdf-editor-front.onrender.com"]
-CSRF_TRUSTED_ORIGINS += ["https://pdf-editor-front.onrender.com"]
