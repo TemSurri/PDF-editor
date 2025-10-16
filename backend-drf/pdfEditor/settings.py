@@ -98,8 +98,9 @@ WSGI_APPLICATION = 'pdfEditor.wsgi.application'
 DATABASES = {
     'default': dj_database_url.parse(
             config("DB_URL"), 
-            conn_max_age = 0,
-            ssl_require = True
+            conn_max_age = 60,
+            ssl_require = True,
+            options={"MAX_CONNS": 5},
             )
 }
 
