@@ -100,8 +100,10 @@ DATABASES = {
             config("DB_URL"), 
             conn_max_age = 60,
             ssl_require = True,
-            options={"MAX_CONNS": 5},
             )
+}
+DATABASES['default']['OPTIONS'] = {
+    "connect_timeout": 10,
 }
 
 # Password validation
