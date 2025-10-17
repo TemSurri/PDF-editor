@@ -63,7 +63,9 @@ class ProtectedView(generics.GenericAPIView):
         })
 
 class LogoutView(views.APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
+        
         refresh_token = request.COOKIES.get("refresh_token")
 
         response = Response({"message": "Logged Out"}, status=status.HTTP_205_RESET_CONTENT)
