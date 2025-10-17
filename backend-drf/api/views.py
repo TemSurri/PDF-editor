@@ -65,6 +65,11 @@ class ProtectedView(generics.GenericAPIView):
 class LogoutView(views.APIView):
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
+        if not refresh_token:
+            response = Response({"detail": "No refresh token found."}, status=status.HTTP_400_BAD_REQUEST)
+            response.delete_cookie("access_token")
+            response.delete_cookie("refresh_token")
+            return response
         if refresh_token:
             try:
                 refresh = RefreshToken(refresh_token)
