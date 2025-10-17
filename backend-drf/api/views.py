@@ -122,3 +122,7 @@ class CookieTokenRefreshView(TokenRefreshView):
             response.delete_cookie("access_token")
             response.delete_cookie("refresh_token")
             return response
+        
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"detail": "CSRF cookie set"})
