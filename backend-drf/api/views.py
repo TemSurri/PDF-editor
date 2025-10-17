@@ -117,9 +117,8 @@ class CookieTokenRefreshView(TokenRefreshView):
             if "refresh" in serializer.validated_data:
                 response.set_cookie("refresh_token", serializer.validated_data["refresh"], httponly=True, secure=True, samesite="None")
             return response
-        except InvalidToken:
-            return Response({"error": "Invalid refresh"}, status=401)
-
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    return JsonResponse({"detail": "CSRF cookie set"})
+        except (InvalidToken, TokenError):
+            response = Response({"error": "Invalid or blacklisted refresh"}, status=401)
+            response.delete_cookie("access_token")
+            response.delete_cookie("refresh_token")
+            return response
