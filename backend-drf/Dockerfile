@@ -15,4 +15,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "pdfEditor.wsgi:application", "--workers", "1", "--threads", "2", "--timeout", "120", "--bind", "0.0.0.0:$PORT"]
+CMD gunicorn pdfEditor.wsgi:application --workers 1 --threads 2 --timeout 120 --bind 0.0.0.0:$PORT
