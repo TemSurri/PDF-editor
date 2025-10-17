@@ -95,6 +95,17 @@ WSGI_APPLICATION = 'pdfEditor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import socket
+import psycopg2
+
+try:
+    sock = socket.create_connection(("aws-1-us-east-2.pooler.supabase.com", 6544), timeout=5)
+    print("✅ Network reachable to Supabase pooler")
+    sock.close()
+except Exception as e:
+    print(f"❌ Cannot reach Supabase pooler: {e}")
+
+
 DATABASES = {
     'default': dj_database_url.parse(
             config("DB_URL"), 
