@@ -13,7 +13,11 @@ const Header = () => {
         <nav className="nav">
         {isLoggedIn ? (
        <>
-        <button onClick={logout}>Logout</button>
+        <button onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        logout();
+        }}>Logout</button>
        </>) : (
        <>
         <a href="/login">Login</a>
