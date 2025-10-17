@@ -95,22 +95,12 @@ WSGI_APPLICATION = 'pdfEditor.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import socket
-import psycopg2
-
-try:
-    sock = socket.create_connection(("aws-1-us-east-2.pooler.supabase.com", 6544), timeout=5)
-    print("✅ Network reachable to Supabase pooler")
-    sock.close()
-except Exception as e:
-    print(f"❌ Cannot reach Supabase pooler: {e}")
-
 
 DATABASES = {
     'default': dj_database_url.parse(
             config("DB_URL"), 
             conn_max_age = 30,
-            ssl_require = True,
+            ssl_require = False,
             )
 }
 DATABASES['default']['OPTIONS'] = {
@@ -167,7 +157,6 @@ CORS_ALLOWED_ORIGINS = [
     config('DEV_FRONT_END'),
     config('FRONT_END_URL_NG_ALT'),
     config('DEV_FRONT_END_ALT'),
-    config('FRONT_END_BASE'),
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -177,7 +166,6 @@ CSRF_TRUSTED_ORIGINS = [
     config('DEV_FRONT_END'),
     config('FRONT_END_URL_NG_ALT'),
     config('DEV_FRONT_END_ALT'),
-    config('FRONT_END_BASE')
 ]
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"   
