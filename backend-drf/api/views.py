@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import generics, views
 from .serializers import *
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenRefreshView
@@ -65,20 +65,25 @@ class ProtectedView(generics.GenericAPIView):
 class LogoutView(views.APIView):
     def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
-        if not refresh_token:
-            response = Response({"detail": "No refresh token found."}, status=status.HTTP_400_BAD_REQUEST)
-            response.delete_cookie("access_token")
-            response.delete_cookie("refresh_token")
-            return response
-        if refresh_token:
-            try:
-                refresh = RefreshToken(refresh_token)
-                refresh.blacklist()
-            except Exception as e:
-                return Response({"error":str(e)}, status = status.HTTP_400_BAD_REQUEST)
-        response = Response({"message":"Logged Out"})
+
+        response = Response({"message": "Logged Out"}, status=status.HTTP_205_RESET_CONTENT)
         response.delete_cookie("access_token")
         response.delete_cookie("refresh_token")
+
+        if not refresh_token:
+            return response
+
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError as e:
+            if "blacklisted" in str(e).lower():
+                pass
+            else:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         return response
 class LoginView(views.APIView):
 
