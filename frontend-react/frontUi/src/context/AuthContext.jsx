@@ -25,13 +25,13 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    setIsLoggedIn(false);
+    setUsername(null);
     try {
       await api.post("/logout/");
     } catch (e) {
       console.error("Logout error", e);
     }
-    setUsername(null);
-    setIsLoggedIn(false);
    
     window.location.href = "/login";
   };
