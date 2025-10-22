@@ -71,15 +71,13 @@ class LogoutView(views.APIView):
         response = Response({"message": "Logged Out"}, status=status.HTTP_205_RESET_CONTENT)
         response.delete_cookie(
             "access_token",
-            path="/",
-            samesite="None",
-            secure=True,
+            path='/',
+            domain=None
         )
         response.delete_cookie(
             "refresh_token",
-            path="/",
-            samesite="None",
-            secure=True,
+            path='/',
+            domain=None
         )
         if not refresh_token:
             return response
