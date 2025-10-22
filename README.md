@@ -2,6 +2,10 @@
 
 <img width="927" height="787" alt="Screenshot 2025-10-02 at 9 22 42 PM" src="https://github.com/user-attachments/assets/7d9a6217-b6da-4a8b-8e34-07d2624b3e7e" />
 
+# Status
+Currently on https://freepdfeditorsimple.onrender.com/ 
+Debugging: Cookie issues on certain browsers with cross site cookie tracking, trying to set up a proxy to simulate same site for api calls from frontend.
+
 # Use Case
 
   Most PDF editors are either:
