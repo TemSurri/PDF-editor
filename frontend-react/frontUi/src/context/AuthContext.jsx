@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
     const initAuth = async () => {
       try {
         await api.get("/csrf/"); 
+        if (!isLoggedIn) return;
         const res = await api.get("/protected/");
 
         setUsername(res.data.name);
