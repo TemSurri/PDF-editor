@@ -5,7 +5,7 @@
 # Status
 Currently on https://freepdfeditorsimple.onrender.com/ 
 Current Issues: Cookie issues on certain browsers with cross site cookie tracking, plus weird logout functionality.
-Current Fix: best fix is to move it all to one domain, for subdomain routing. I want to do it for free.
+Current Fix Agenda: best fix is to move it all to one domain, for subdomain routing. I want to do it for free.
 
 # Use Case
 
