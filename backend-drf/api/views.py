@@ -69,9 +69,18 @@ class LogoutView(views.APIView):
         refresh_token = request.COOKIES.get("refresh_token")
 
         response = Response({"message": "Logged Out"}, status=status.HTTP_205_RESET_CONTENT)
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
-
+        response.delete_cookie(
+            "access_token",
+            path="/",
+            samesite="None",
+            secure=True,
+        )
+        response.delete_cookie(
+            "refresh_token",
+            path="/",
+            samesite="None",
+            secure=True,
+        )
         if not refresh_token:
             return response
 
