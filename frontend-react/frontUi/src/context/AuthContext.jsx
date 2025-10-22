@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [username, setUsername] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [justLoggedOut, setJustLoggedOut] = useState(false);
 
   const login = async (username, password) => {
     try {
@@ -25,34 +26,37 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    setIsLoggedIn(false);
-    setUsername(null);
     try {
       await api.post("/logout/");
-    } catch (e) {
-      console.error("Logout error", e);
+    } catch (err) {
+      console.error("Logout error", err);
     }
-   
+
+    setUsername(null);
+    setIsLoggedIn(false);
+    setJustLoggedOut(true);
+
     window.location.href = "/login";
   };
 
 
   useEffect(() => {
+    if (justLoggedOut) return; 
+
     const initAuth = async () => {
       try {
-        await api.get("/csrf/"); 
-        if (!isLoggedIn) return;
+        await api.get("/csrf/");
         const res = await api.get("/protected/");
-
         setUsername(res.data.name);
         setIsLoggedIn(true);
-      } catch {
+      } catch (err) {
         setUsername(null);
         setIsLoggedIn(false);
       }
     };
+
     initAuth();
-  }, []);
+  }, [justLoggedOut]);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, username, login, logout }}>
