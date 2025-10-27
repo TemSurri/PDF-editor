@@ -56,7 +56,8 @@ ALLOWED_HOSTS = [
     "backend",
     "frontend",
     "freepdfeditor.onrender.com",
-    config("CURRENT_HOST", default=os.environ.get("CURRENT_HOST", "freepdfeditor.onrender.com")),
+    "https://thefreepdfeditorsimple.onrender.com",
+    config("CURRENT_HOST", default=os.environ.get("CURRENT_HOST", 'https://thefreepdfeditorsimple.onrender.com')),
 ]
 
 # ---------------------------------------------------------------------
