@@ -163,26 +163,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "api.CustomUser"
 
-CORS_ALLOWED_ORIGINS = [
-    config('FRONT_END_URL_DOCKER'),
-    config('FRONT_END_URL_NG'),
-    config('DEV_FRONT_END'),
-    config('FRONT_END_URL_NG_ALT'),
-    config('DEV_FRONT_END_ALT'),
-]
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    config('FRONT_END_URL_DOCKER'),
-    config('FRONT_END_URL_NG'),
-    config('DEV_FRONT_END'),
-    config('FRONT_END_URL_NG_ALT'),
-    config('DEV_FRONT_END_ALT'),
+    config('DEV_ORIGIN'),
+    config('PROD_ORIGIN'),
 ]
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = "None"   
+CSRF_COOKIE_SAMESITE = "Lax"   
 CSRF_COOKIE_HTTPONLY = True
 
 SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_HTTPONLY = True
