@@ -3,9 +3,9 @@
 <img width="927" height="787" alt="Screenshot 2025-10-02 at 9 22 42 PM" src="https://github.com/user-attachments/assets/7d9a6217-b6da-4a8b-8e34-07d2624b3e7e" />
 
 # Status
-Currently on https://freepdfeditorsimple.onrender.com/ 
-Current Issues: Cookie issues on certain browsers with cross site cookie tracking, plus weird logout functionality.
-Current Fix Agenda: best fix is to move it all to one domain, for subdomain routing. I want to do it for free.
+Currently on https://thefreepdfeditorsimple.onrender.com/
+
+Current Fix Agenda: UI buttons are a little hard to follow and misleading + clean cicd
 
 # Use Case
 
