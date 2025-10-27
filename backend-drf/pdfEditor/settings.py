@@ -56,8 +56,8 @@ ALLOWED_HOSTS = [
     "backend",
     "frontend",
     "freepdfeditor.onrender.com",
-    "https://thefreepdfeditorsimple.onrender.com",
-    config("CURRENT_HOST", default=os.environ.get("CURRENT_HOST", 'https://thefreepdfeditorsimple.onrender.com')),
+    "thefreepdfeditorsimple.onrender.com",
+    config("CURRENT_HOST", default=os.environ.get("CURRENT_HOST", 'thefreepdfeditorsimple.onrender.com')),
 ]
 
 # ---------------------------------------------------------------------
@@ -160,7 +160,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     config("DEV_ORIGIN", default=os.environ.get("DEV_ORIGIN", "http://localhost:5173")),
-    config("PROD_ORIGIN", default=os.environ.get("PROD_ORIGIN", "https://freepdfeditor.onrender.com")),
+    config("PROD_ORIGIN", default=os.environ.get("PROD_ORIGIN", "https://thefreepdfeditorsimple.onrender.com/")),
 ]
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "Lax"
