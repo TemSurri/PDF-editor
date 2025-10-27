@@ -5,7 +5,9 @@
 # Status
 Currently on https://thefreepdfeditorsimple.onrender.com/
 
-Current Fix Agenda: UI buttons are a little hard to follow and misleading + clean cicd
+Current Fix Agenda: 
+- UI buttons are a little hard to follow and misleading + clean cicd
+- Mobile refinement : works on mobile but very hard to manage
 
 # Use Case
 
