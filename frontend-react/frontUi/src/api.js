@@ -1,11 +1,6 @@
 import axios from "axios";
 
-let base_URL = import.meta.env.VITE_BACKEND_BASE_URL;
-if (base_URL === undefined) {
-  base_URL = 'https://freepdfeditor.onrender.com/api/users';
-}
-
-
+const base_URL = "/api/users/"
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -48,14 +43,16 @@ api.interceptors.response.use(
     originalRequest._retry = true;
     try {
 
-      await axios.post(
-        `${base_URL}/token/refresh/`,
+      await api.post(
+        "/token/refresh/",
         {},
         {
           withCredentials: true,
           headers: { "X-CSRFToken": getCookie("csrftoken") || "" },
         }
       );
+
+
       return api(originalRequest); 
     } catch (refreshError) {
       return Promise.reject(refreshError);

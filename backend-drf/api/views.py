@@ -65,20 +65,20 @@ class ProtectedView(generics.GenericAPIView):
 class LogoutView(views.APIView):
     permission_classes = [AllowAny]
     def post(self, request):
-        
+        print("LOGOUT VIEW")
         refresh_token = request.COOKIES.get("refresh_token")
 
         response = Response({"message": "Logged Out"}, status=status.HTTP_205_RESET_CONTENT)
+        
         response.delete_cookie(
-            "access_token",
-            path='/',
-            domain=None
+            key="access_token",
+            path="/",
         )
         response.delete_cookie(
-            "refresh_token",
-            path='/',
-            domain=None
+            key="refresh_token",
+            path="/",
         )
+
         if not refresh_token:
             return response
 
@@ -97,6 +97,7 @@ class LogoutView(views.APIView):
 class LoginView(views.APIView):
 
     def post(self, request):
+        print("🧠 Incoming data:", request.data)
         serializer = LoginUserSerializer(data = request.data)
 
         if serializer.is_valid():

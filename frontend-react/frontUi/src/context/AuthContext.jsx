@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
     try {
   
       await api.get("/csrf/");
-      await api.post("/login/", { username, password }); 
+      await api.post("/login/", { username, password },{ headers: { "Content-Type": "application/json" } }); 
 
       const user_response = await api.get("/protected/");
 
